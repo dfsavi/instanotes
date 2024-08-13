@@ -1,37 +1,21 @@
-import Versions from './components/Versions'
-import electronLogo from './assets/electron.svg'
+import "@mantine/core/styles.css";
+import "@mantine/tiptap/styles.css"
+import { Container } from "@mantine/core";
+import Navbar from "./components/Navbar/Navbar";
+import NoteArea from "./components/NoteArea/NoteArea";
+import BasicAppShell from "./components/BasicAppShell/BasicAppShell"
+import electronLogo from "./assets/electron.svg";
+
+import { MantineProvider } from "@mantine/core";
 
 function App(): JSX.Element {
-  const ipcHandle = (): void => window.electron.ipcRenderer.send('ping')
+	const ipcHandle = (): void => window.electron.ipcRenderer.send("ping");
 
-  return (
-    <>
-      <img alt="logo" className="logo" src={electronLogo} />
-      <div className="creator">Powered by electron-vite</div>
-      <div className="text">
-        This is my custom Electron app
-
-        Build an Electron app with <span className="react">React</span>
-        &nbsp;and <span className="ts">TypeScript</span>
-      </div>
-      <p className="tip">
-        Please try pressing <code>F12</code> to open the devTool
-      </p>
-      <div className="actions">
-        <div className="action">
-          <a href="https://electron-vite.org/" target="_blank" rel="noreferrer">
-            Documentation
-          </a>
-        </div>
-        <div className="action">
-          <a target="_blank" rel="noreferrer" onClick={ipcHandle}>
-            Send IPC
-          </a>
-        </div>
-      </div>
-      <Versions></Versions>
-    </>
-  )
+	return (
+		<MantineProvider>
+      <BasicAppShell />
+		</MantineProvider>
+	);
 }
 
-export default App
+export default App;
