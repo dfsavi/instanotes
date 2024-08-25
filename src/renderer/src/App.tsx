@@ -1,21 +1,17 @@
-import "@mantine/core/styles.css";
-import "@mantine/tiptap/styles.css"
-import { Container } from "@mantine/core";
-import Navbar from "./components/Navbar/Navbar";
-import NoteArea from "./components/NoteArea/NoteArea";
-import BasicAppShell from "./components/BasicAppShell/BasicAppShell"
-import electronLogo from "./assets/electron.svg";
+import '@mantine/core/styles.css'
+import '@mantine/tiptap/styles.css'
+import BasicAppShell from './components/BasicAppShell/BasicAppShell'
 
-import { MantineProvider } from "@mantine/core";
+import { MantineProvider } from '@mantine/core'
 
 function App(): JSX.Element {
-	const ipcHandle = (): void => window.electron.ipcRenderer.send("ping");
+  const ipcHandle = (): void => window.electron.ipcRenderer.send('ping')
 
-	return (
-		<MantineProvider>
+  return (
+    <MantineProvider>
       <BasicAppShell />
-		</MantineProvider>
-	);
+    </MantineProvider>
+  )
 }
 
-export default App;
+export default App

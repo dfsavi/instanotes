@@ -1,0 +1,7 @@
+.borderless-editor {
+  border: none !important;
+}
+
+.borderless-editor .mantine-RichTextEditor-content {
+  border: none !important;
+}
