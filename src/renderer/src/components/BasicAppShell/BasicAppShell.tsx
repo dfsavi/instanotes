@@ -1,8 +1,10 @@
-import { AppShell, Burger, Group, Text, Stack } from '@mantine/core'
+import { AppShell, Burger, Group, Text, Stack, Container } from '@mantine/core'
 import NoteArea from '../NoteArea/NoteArea'
+import UserMenu from '../UserMenu/UserMenu'
 import { useDisclosure } from '@mantine/hooks'
 import { useState } from 'react'
 import { Note } from '../../types/Note'
+import './BasicAppShell.css'
 
 // Generate random notes
 const generateRandomNotes = (count: number): Note[] => {
@@ -11,7 +13,7 @@ const generateRandomNotes = (count: number): Note[] => {
     .map((_, index) => ({
       id: index,
       header: `Note ${index + 1}`,
-      body: `This is the body of note ${index + 1}`,
+      body: `This is the body of notes ${index + 1} `,
       date: new Date(Date.now() - Math.random() * 10000000000).toLocaleDateString()
     }))
 }
@@ -23,30 +25,38 @@ function BasicAppShell(): JSX.Element {
 
   return (
     <AppShell
-      header={{ height: 60 }}
-      navbar={{ width: 300, breakpoint: 'sm', collapsed: { mobile: !opened } }}
+      navbar={{ width: 200, breakpoint: 'sm', collapsed: { mobile: !opened } }}
       padding="md"
     >
-      <AppShell.Header>
-        <Group h="100%" px="md">
-          <Burger opened={opened} onClick={toggle} hiddenFrom="sm" size="sm" />
-        </Group>
-      </AppShell.Header>
-      <AppShell.Navbar p="md">
-        <Stack>
-          {notes.map((note) => (
-            <Group
-              key={note.id}
-              onClick={() => setSelectedNote(note)}
-              style={{ cursor: 'pointer' }}
-            >
-              <Text fw={700}>{note.header}</Text>
-              <Text size="sm" c="dimmed">
-                {note.date}
-              </Text>
-            </Group>
-          ))}
-        </Stack>
+      <AppShell.Navbar>
+        <Burger opened={opened} onClick={toggle} hiddenFrom="sm" size="sm" />
+        <UserMenu />
+        <Container fluid style={{ overflowY: 'auto', width: '100%', paddingTop: '1rem' }}>
+          <Stack>
+            {notes.map((note) => (
+              <Group
+                key={note.id}
+                onClick={() => setSelectedNote(note)}
+                style={{
+                  cursor: 'pointer',
+                  backgroundColor: selectedNote?.id === note.id ? '#f0f0f0' : 'transparent',
+                  padding: '2px',
+                  borderRadius: '4px'
+                }}
+              >
+                <Container fluid>
+                  <Text fw={700}>{note.header}</Text>
+                  <Text size="sm" truncate="end" c="dimmed">
+                    {note.body}
+                  </Text>
+                  <Text size="sm" c="dimmed">
+                    {note.date}
+                  </Text>
+                </Container>
+              </Group>
+            ))}
+          </Stack>
+        </Container>
       </AppShell.Navbar>
       <AppShell.Main>
         <NoteArea selectedNote={selectedNote} />

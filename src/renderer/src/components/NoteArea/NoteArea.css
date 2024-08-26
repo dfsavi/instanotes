@@ -1,5 +1,6 @@
 .borderless-editor {
   border: none !important;
+  height: 100%;
 }
 
 .borderless-editor .mantine-RichTextEditor-content {

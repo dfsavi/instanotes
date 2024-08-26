@@ -5,7 +5,7 @@ import BasicAppShell from './components/BasicAppShell/BasicAppShell'
 import { MantineProvider } from '@mantine/core'
 
 function App(): JSX.Element {
-  const ipcHandle = (): void => window.electron.ipcRenderer.send('ping')
+  // const ipcHandle = (): void => window.electron.ipcRenderer.send('ping')
 
   return (
     <MantineProvider>

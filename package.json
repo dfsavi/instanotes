@@ -38,10 +38,12 @@
     "@tiptap/extension-subscript": "^2.5.9",
     "@tiptap/extension-superscript": "^2.5.9",
     "@tiptap/extension-text-align": "^2.5.9",
+    "@tiptap/extension-typography": "^2.6.6",
     "@tiptap/extension-underline": "^2.5.9",
     "@tiptap/pm": "^2.5.9",
     "@tiptap/react": "^2.5.9",
     "@tiptap/starter-kit": "^2.5.9",
+    "better-sqlite3": "^11.2.1",
     "electron-updater": "^6.1.7",
     "embla-carousel-react": "^8.1.8"
   },

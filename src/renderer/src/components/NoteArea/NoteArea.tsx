@@ -44,7 +44,7 @@ function NoteArea({ selectedNote }: NoteAreaProps): JSX.Element {
 
   return (
     <RichTextEditor editor={editor} className="borderless-editor">
-      <RichTextEditor.Toolbar sticky stickyOffset={60}>
+      <RichTextEditor.Toolbar sticky>
         <RichTextEditor.ControlsGroup>
           <RichTextEditor.Bold />
           <RichTextEditor.Italic />
