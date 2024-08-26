@@ -1,27 +1,37 @@
+// Add this type declaration at the top of the file
+
 import { AppShell, Burger, Group, Text, Stack, Container } from '@mantine/core'
 import NoteArea from '../NoteArea/NoteArea'
 import UserMenu from '../UserMenu/UserMenu'
 import { useDisclosure } from '@mantine/hooks'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { Note } from '../../types/Note'
 import './BasicAppShell.css'
 
-// Generate random notes
-const generateRandomNotes = (count: number): Note[] => {
-  return Array(count)
-    .fill(0)
-    .map((_, index) => ({
-      id: index,
-      header: `Note ${index + 1}`,
-      body: `This is the body of notes ${index + 1} `,
-      date: new Date(Date.now() - Math.random() * 10000000000).toLocaleDateString()
-    }))
+const stripHtml = (html: string): string => {
+  const tmp = document.createElement('DIV')
+  tmp.innerHTML = html
+  return tmp.textContent || tmp.innerText || ''
 }
 
 function BasicAppShell(): JSX.Element {
   const [opened, { toggle }] = useDisclosure()
-  const [notes] = useState<Note[]>(generateRandomNotes(15))
+  const [notes, setNotes] = useState<Note[]>([])
   const [selectedNote, setSelectedNote] = useState<Note | null>(null)
+
+  useEffect(() => {
+    const fetchNotes = async (): Promise<void> => {
+      try {
+        const fetchedNotes = await window.electron.ipcRenderer.invoke('get-notes')
+        setNotes(fetchedNotes)
+        console.log('Fetched notes:', fetchedNotes)
+      } catch (error) {
+        console.error('Failed to fetch notes:', error)
+      }
+    }
+
+    fetchNotes()
+  }, [])
 
   return (
     <AppShell
@@ -45,12 +55,11 @@ function BasicAppShell(): JSX.Element {
                 }}
               >
                 <Container fluid>
-                  <Text fw={700}>{note.header}</Text>
-                  <Text size="sm" truncate="end" c="dimmed">
-                    {note.body}
+                  <Text truncate="end" fw={700}>
+                    {stripHtml(note.body)}
                   </Text>
                   <Text size="sm" c="dimmed">
-                    {note.date}
+                    {note.date_modified}
                   </Text>
                 </Container>
               </Group>
@@ -59,7 +68,11 @@ function BasicAppShell(): JSX.Element {
         </Container>
       </AppShell.Navbar>
       <AppShell.Main>
-        <NoteArea selectedNote={selectedNote} />
+        <NoteArea
+          selectedNote={selectedNote}
+          setNotes={setNotes}
+          setSelectedNote={setSelectedNote}
+        />
       </AppShell.Main>
     </AppShell>
   )

@@ -7,18 +7,15 @@ function UserMenu(): JSX.Element {
       py={10}
       style={{
         backgroundColor: '#f0f0f0',
-        width: '100%'
+        width: '100%',
+        display: 'flex',
+        justifyContent: 'space-between',
+        alignItems: 'center'
       }}
     >
       <Menu>
         <Menu.Target>
-          <Avatar
-            src="https://example.com/profile-image.jpg"
-            size="lg"
-            radius="xl"
-            mx="auto"
-            style={{ cursor: 'pointer' }}
-          />
+          <Avatar src="" size="lg" radius="xl" mx="auto" style={{ cursor: 'pointer' }} />
         </Menu.Target>
         <Menu.Dropdown>
           <Menu.Item>Profile</Menu.Item>

@@ -1,8 +1,14 @@
-import { contextBridge } from 'electron'
+import { contextBridge, ipcRenderer } from 'electron'
 import { electronAPI } from '@electron-toolkit/preload'
+import { Note } from '../main/database'
 
 // Custom APIs for renderer
-const api = {}
+const api = {
+  addNote: (note: Note): Promise<Note> => ipcRenderer.invoke('add-note', note),
+  getNotes: (): Promise<Note[]> => ipcRenderer.invoke('get-notes'),
+  updateNote: (note: Note): Promise<Note> => ipcRenderer.invoke('update-note', note),
+  deleteNote: (id: number): Promise<void> => ipcRenderer.invoke('delete-note', id)
+}
 
 // Use `contextBridge` APIs to expose Electron APIs to
 // renderer only if context isolation is enabled, otherwise

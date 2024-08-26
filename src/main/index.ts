@@ -2,6 +2,8 @@ import { app, shell, BrowserWindow, ipcMain } from 'electron'
 import { join } from 'path'
 import { electronApp, optimizer, is } from '@electron-toolkit/utils'
 import icon from '../../resources/icon.png?asset'
+import db from './database'
+import { addNote, getNotes, updateNote, deleteNote, Note } from './database'
 
 function createWindow(): void {
   // Create the browser window.
@@ -52,6 +54,13 @@ app.whenReady().then(() => {
   // IPC test
   ipcMain.on('ping', () => console.log('pong'))
 
+  // IPC handlers for database operations
+
+  ipcMain.handle('add-note', (_, note: Note) => addNote(note))
+  ipcMain.handle('get-notes', () => getNotes())
+  ipcMain.handle('update-note', (_, note: Note) => updateNote(note))
+  ipcMain.handle('delete-note', (_, id: number) => deleteNote(id))
+
   createWindow()
 
   app.on('activate', function () {
@@ -68,6 +77,16 @@ app.on('window-all-closed', () => {
   if (process.platform !== 'darwin') {
     app.quit()
   }
+})
+
+// Close the database connection when the app is quit
+app.on('quit', () => {
+  db.close()
+})
+
+// Close the database connection when the app is about to quit
+app.on('will-quit', () => {
+  db.close()
 })
 
 // In this file you can include the rest of your app"s specific main process
