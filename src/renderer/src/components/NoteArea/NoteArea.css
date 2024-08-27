@@ -6,3 +6,8 @@
 .borderless-editor .mantine-RichTextEditor-content {
   border: none !important;
 }
+
+.centered-toolbar {
+  display: flex;
+  justify-content: center;
+}

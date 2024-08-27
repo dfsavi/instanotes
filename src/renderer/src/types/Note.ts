@@ -4,4 +4,5 @@ export type Note = {
   body: string
   date_created: string
   date_modified: string
+  category: string
 }

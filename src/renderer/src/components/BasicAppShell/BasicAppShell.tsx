@@ -8,10 +8,34 @@ import { useState, useEffect } from 'react'
 import { Note } from '../../types/Note'
 import './BasicAppShell.css'
 
+// Add these utility functions at the top of the file, after the imports
 const stripHtml = (html: string): string => {
   const tmp = document.createElement('DIV')
   tmp.innerHTML = html
   return tmp.textContent || tmp.innerText || ''
+}
+
+const getFirstParagraph = (html: string): string => {
+  const parser = new DOMParser()
+  const doc = parser.parseFromString(html, 'text/html')
+  const firstP = doc.querySelector('p')
+  return firstP ? stripHtml(firstP.innerHTML) : ''
+}
+
+const formatDate = (dateString: string): string => {
+  const date = new Date(dateString.endsWith('Z') ? dateString : dateString + 'Z')
+  date.setMinutes(date.getMinutes() - date.getTimezoneOffset())
+  const now = new Date()
+  const yesterday = new Date(now)
+  yesterday.setDate(yesterday.getDate() - 1)
+
+  if (date.toDateString() === now.toDateString()) {
+    return 'Today'
+  } else if (date.toDateString() === yesterday.toDateString()) {
+    return 'Yesterday'
+  } else {
+    return date.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' })
+  }
 }
 
 function BasicAppShell(): JSX.Element {
@@ -25,13 +49,18 @@ function BasicAppShell(): JSX.Element {
         const fetchedNotes = await window.electron.ipcRenderer.invoke('get-notes')
         setNotes(fetchedNotes)
         console.log('Fetched notes:', fetchedNotes)
+
+        // Select the first note if the list is not empty
+        if (fetchedNotes.length > 0 && !selectedNote) {
+          setSelectedNote(fetchedNotes[0])
+        }
       } catch (error) {
         console.error('Failed to fetch notes:', error)
       }
     }
 
     fetchNotes()
-  }, [])
+  }, [selectedNote])
 
   return (
     <AppShell
@@ -51,17 +80,18 @@ function BasicAppShell(): JSX.Element {
                   cursor: 'pointer',
                   backgroundColor: selectedNote?.id === note.id ? '#f0f0f0' : 'transparent',
                   padding: '2px',
-                  borderRadius: '4px'
+                  borderRadius: '4px',
+                  width: '100%'
                 }}
               >
-                <Container fluid>
-                  <Text truncate="end" fw={700}>
-                    {stripHtml(note.body)}
+                <Stack gap={4} style={{ width: '100%' }}>
+                  <Text truncate="end" fw={700} style={{ textAlign: 'left', userSelect: 'none' }}>
+                    {getFirstParagraph(note.body)}
                   </Text>
-                  <Text size="sm" c="dimmed">
-                    {note.date_modified}
+                  <Text size="sm" c="dimmed" style={{ textAlign: 'left', userSelect: 'none' }}>
+                    {formatDate(note.date_modified)}
                   </Text>
-                </Container>
+                </Stack>
               </Group>
             ))}
           </Stack>

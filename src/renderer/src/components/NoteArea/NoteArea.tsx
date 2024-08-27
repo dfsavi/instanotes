@@ -1,13 +1,12 @@
 import React from 'react'
 import { Note } from '../../types/Note'
-import { RichTextEditor, Link } from '@mantine/tiptap'
+import { RichTextEditor, Link, getTaskListExtension } from '@mantine/tiptap'
 import { useEditor } from '@tiptap/react'
-import Highlight from '@tiptap/extension-highlight'
 import StarterKit from '@tiptap/starter-kit'
 import Underline from '@tiptap/extension-underline'
 import TextAlign from '@tiptap/extension-text-align'
-import Superscript from '@tiptap/extension-superscript'
-import SubScript from '@tiptap/extension-subscript'
+import TaskList from '@tiptap/extension-task-list'
+import TaskItem from '@tiptap/extension-task-item'
 import './NoteArea.css'
 import { IconPlus, IconTrash } from '@tabler/icons-react'
 
@@ -25,9 +24,13 @@ function NoteArea({ selectedNote, setNotes, setSelectedNote }: NoteAreaProps): J
       StarterKit,
       Underline,
       Link,
-      Superscript,
-      SubScript,
-      Highlight,
+      getTaskListExtension(TaskList),
+      TaskItem.configure({
+        nested: true,
+        HTMLAttributes: {
+          class: 'task-item'
+        }
+      }),
       TextAlign.configure({ types: ['heading', 'paragraph'] })
     ],
     content,
@@ -38,13 +41,13 @@ function NoteArea({ selectedNote, setNotes, setSelectedNote }: NoteAreaProps): J
         header: '',
         body: editor.getHTML(),
         date_created: selectedNote?.date_created || '',
-        date_modified: new Date().toISOString()
+        date_modified: new Date().toISOString(),
+        category: selectedNote?.category || ''
       }
       window.electron.ipcRenderer.invoke('update-note', updatedNote)
       setNotes((prevNotes) =>
         prevNotes.map((note) => (note.id === updatedNote.id ? updatedNote : note))
       )
-      console.log(editor.getHTML())
     }
   })
 
@@ -81,7 +84,8 @@ function NoteArea({ selectedNote, setNotes, setSelectedNote }: NoteAreaProps): J
       header: '',
       body: '',
       date_created: new Date().toISOString(),
-      date_modified: new Date().toISOString()
+      date_modified: new Date().toISOString(),
+      category: selectedNote?.category || ''
     }
     window.electron.ipcRenderer
       .invoke('add-note', newNote)
@@ -96,27 +100,24 @@ function NoteArea({ selectedNote, setNotes, setSelectedNote }: NoteAreaProps): J
 
   return (
     <RichTextEditor editor={editor} className="borderless-editor">
-      <RichTextEditor.Toolbar sticky>
+      <RichTextEditor.Toolbar sticky className="centered-toolbar">
         <RichTextEditor.ControlsGroup>
           <RichTextEditor.Control title="Add New Note" onClick={handleAddNewNote}>
             <IconPlus size={16} />
           </RichTextEditor.Control>
         </RichTextEditor.ControlsGroup>
+
+        <RichTextEditor.ControlsGroup>
+          <RichTextEditor.TaskList />
+        </RichTextEditor.ControlsGroup>
+
         <RichTextEditor.ControlsGroup>
           <RichTextEditor.Bold />
           <RichTextEditor.Italic />
           <RichTextEditor.Underline />
           <RichTextEditor.Strikethrough />
           <RichTextEditor.ClearFormatting />
-          <RichTextEditor.Highlight />
           <RichTextEditor.Code />
-        </RichTextEditor.ControlsGroup>
-
-        <RichTextEditor.ControlsGroup>
-          <RichTextEditor.H1 />
-          <RichTextEditor.H2 />
-          <RichTextEditor.H3 />
-          <RichTextEditor.H4 />
         </RichTextEditor.ControlsGroup>
 
         <RichTextEditor.ControlsGroup>
@@ -138,10 +139,6 @@ function NoteArea({ selectedNote, setNotes, setSelectedNote }: NoteAreaProps): J
           <RichTextEditor.AlignRight />
         </RichTextEditor.ControlsGroup>
 
-        <RichTextEditor.ControlsGroup>
-          <RichTextEditor.Undo />
-          <RichTextEditor.Redo />
-        </RichTextEditor.ControlsGroup>
         <RichTextEditor.ControlsGroup>
           <RichTextEditor.Control title="Delete Note" onClick={handleDeleteNote}>
             <IconTrash size={16} />
