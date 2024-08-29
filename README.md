@@ -1,4 +1,4 @@
-# Easy notes
+# InstaNotes
 A simple note-taking app that supports Markdown.
 
 ### Why this project
