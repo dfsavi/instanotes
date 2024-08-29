@@ -15,11 +15,6 @@ db.exec(`
     date_modified TEXT,
     category TEXT
   );
-
-  -- Add category column if it doesn't exist
-  BEGIN TRANSACTION;
-  ALTER TABLE notes ADD COLUMN category TEXT DEFAULT NULL;
-  COMMIT;
 `)
 
 export interface Note {

@@ -2,7 +2,7 @@
 
 import { AppShell, Burger, Group, Text, Stack, Container } from '@mantine/core'
 import NoteArea from '../NoteArea/NoteArea'
-import UserMenu from '../UserMenu/UserMenu'
+// import UserMenu from '../UserMenu/UserMenu'
 import { useDisclosure } from '@mantine/hooks'
 import { useState, useEffect } from 'react'
 import { Note } from '../../types/Note'
@@ -48,8 +48,6 @@ function BasicAppShell(): JSX.Element {
       try {
         const fetchedNotes = await window.electron.ipcRenderer.invoke('get-notes')
         setNotes(fetchedNotes)
-        console.log('Fetched notes:', fetchedNotes)
-
         // Select the first note if the list is not empty
         if (fetchedNotes.length > 0 && !selectedNote) {
           setSelectedNote(fetchedNotes[0])
@@ -69,7 +67,7 @@ function BasicAppShell(): JSX.Element {
     >
       <AppShell.Navbar>
         <Burger opened={opened} onClick={toggle} hiddenFrom="sm" size="sm" />
-        <UserMenu />
+        {/* <UserMenu /> */}
         <Container fluid style={{ overflowY: 'auto', width: '100%', paddingTop: '1rem' }}>
           <Stack>
             {notes.map((note) => (

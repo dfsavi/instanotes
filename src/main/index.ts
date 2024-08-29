@@ -16,7 +16,8 @@ function createWindow(): void {
     webPreferences: {
       preload: join(__dirname, '../preload/index.js'),
       sandbox: false
-    }
+    },
+    title: 'Instanotes'
   })
 
   mainWindow.on('ready-to-show', () => {
